@@ -1,0 +1,43 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.0.M4'
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group 'my.sandbox'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencies {
+    // This will load the dependencies for the web spring boot
+    // spring-boot-starter-jdbc will transitively loads tomcat-jdbc to configure the DataSource bean.
+    // For embedded database driver Derby, spring boot will registers DataSource bean using in-memory settings,
+    // so we don't need to define DataSource bean.
+    // Spring boot will populate the in-memory schema/data on startup, we provide the schema.sql and data.sql
+    // in resources (if using other embedded database, provide schema-${platform}.sql, data-${platform}.sql,
+    // and define spring.datasource.platform in application.properties accordingly.
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
